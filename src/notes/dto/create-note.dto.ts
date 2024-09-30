@@ -10,7 +10,7 @@ export default class CreateNoteDto {
     @IsNotEmpty()
     readonly title: string;
 
-    @ApiProperty({example: 'someDescription', description: 'Описане заметки'})
+    @ApiProperty({example: 'someDescription', description: 'Описание заметки'})
     @IsString()
     @MaxLength(1000)
     @IsNotEmpty()
@@ -21,12 +21,12 @@ export default class CreateNoteDto {
     @MaxLength(200)
     readonly imgUrl: string | null;
 
-    @ApiProperty({example: 'Минск, Минская область, Беларусь 23.09.2024, 22:19:04', description: 'Данные о геопозиции и времени создания'})
+    @ApiProperty({example: 'Минск, Минская область, Беларусь 30.11.2024, 08:10:32', description: 'Данные о геопозиции и времени создания'})
     @IsString()
     @MaxLength(100)
     readonly location: string | null;
 
-    @ApiProperty({example: [{name: 'new'}, {name: 'public'}], description: 'Набор тегов'})
+    @ApiProperty({example: [{name: 'someTag'}, {name: 'anotherTag'}], description: 'Набор тегов'})
     @IsArray()
     readonly tags: Tag[] | string | null;
 }

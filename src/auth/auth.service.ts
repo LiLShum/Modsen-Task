@@ -12,12 +12,12 @@ export class AuthService {
               private utilityService: UtilityService) {
   }
 
-  async login(dto: CreateUserDto){
+  async login(dto: CreateUserDto) : Promise<Object> {
     const user = await this.utilityService.validateUser(dto);
     return this.utilityService.generateToken(user);
   }
 
-  async register(dto: CreateUserDto){
+  async register(dto: CreateUserDto) : Promise<Object> {
     const candidate = await this.userService.getByLogin(dto.login)
     if (candidate) throw new HttpException('User already exists', 400);
 
@@ -27,7 +27,7 @@ export class AuthService {
     return this.utilityService.generateToken(createdUser);
   }
 
-  async logout(@Res() res: Response) {
+  async logout(@Res() res: Response) : Promise<Object> {
     res.clearCookie('jwt');
     return res.send({
       message: 'Logged out successfully',

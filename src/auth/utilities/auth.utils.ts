@@ -6,11 +6,13 @@ import * as process from "process";
 import { User } from '../../schemas/user.schema'
 import CreateUserDto from "../../users/dto/create-user.dto";
 import {UsersService} from "../../users/user.service";
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UtilityService{
   constructor(private userService: UsersService,
-              private jwtService: JwtService) {
+              private jwtService: JwtService,
+              private readonly configService: ConfigService) {
   }
 
   async validateUser(dto: CreateUserDto): Promise<User> {
@@ -26,8 +28,8 @@ export class UtilityService{
   }
   async generateToken(user) {
     const payload = { login: user.login, sub: user._id };
-    const accessToken = this.jwtService.sign(payload, { secret: 'Modsen', expiresIn: '1h' });
-    const refreshToken = this.jwtService.sign(payload, { secret: 'Modsen', expiresIn: '1d' });
+    const accessToken = this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET'), expiresIn: '1h' });
+    const refreshToken = this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET'), expiresIn: '1d' });
     return {
       accessToken, refreshToken
     };

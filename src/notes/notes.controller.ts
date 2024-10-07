@@ -7,16 +7,12 @@ import {
     Post,
     Put,
     Query,
-    Req, Res, UploadedFile,
+    Req, Res,
     UseGuards,
-    UseInterceptors
 } from '@nestjs/common';
-import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from 'express';
 import { DeleteResult } from "mongodb";
-import { v4 as uuidv4 } from 'uuid';
-
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { Note } from "../schemas/note.schema";
 import { TagsService } from "../tags/tags.service";
@@ -33,14 +29,14 @@ export class NotesController {
     @ApiResponse({status: 200, type: [Note]})
     @UseGuards(JwtAuthGuard)
     @Get()
-    getAllNotes(
+    getAllNotes  (
       @Req() req,
       @Query('search') search: string = '',
       @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'asc',
       @Query('page') page: number = 1,
       @Query('limit') limit: number = 10,
       @Query('filter') filter: string = '',
-    ): Promise<Note[]>{
+    ): Promise<Note[]> {
         const userId = req.user.userId;
         return this.notesService.findAll(
           userId,
@@ -89,7 +85,7 @@ export class NotesController {
     @ApiResponse({status: 200, type: Note})
     @UseGuards(JwtAuthGuard)
     @Put(':id')
-    editNote(@Param('id') id: string, @Body() noteDto: CreateNoteDto){
+    editNote(@Param('id') id: string, @Body() noteDto: CreateNoteDto) : Promise<Note> {
         return this.notesService.editNote(id, noteDto);
     }
 
@@ -102,13 +98,7 @@ export class NotesController {
     }
 
     @Get(':id/img')
-    async getImage(@Param('id') id: string, @Res() res: Response){
-        const imageUrl = await this.notesService.getImage(id);
-
-        if (!imageUrl) {
-            return res.status(404).send('Image not found');
-        }
-
-        return res.send(imageUrl);
+    async getImage(@Param('id') id: string, @Res() res: Response) : Promise<Object> {
+        return res.send(await this.notesService.getImage(id));
     }
 }

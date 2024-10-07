@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DeleteResult } from "mongodb";
-import { Model } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
 
 import { Note } from '../schemas/note.schema';
 import { User } from "../schemas/user.schema";
@@ -53,15 +53,24 @@ export class NotesService {
     return newNote.save();
   }
 
-  async editNote(id: string, dto: CreateNoteDto){
-    return this.noteModel.updateOne({_id: id}, dto).exec();
+  async editNote(id: string, dto: CreateNoteDto): Promise<Note> {
+    return  await this.noteModel.findOneAndUpdate(
+      { _id: id },
+      { $set: dto },
+      { new: true }
+    ).exec();
   }
 
-  async deleteNote(id: string): Promise<DeleteResult>{
+
+  async deleteNote(id: string): Promise<DeleteResult> {
     return this.noteModel.deleteOne({_id: id}).exec();
   }
 
-  async getImage(id: string){
-    return (await this.find(id)).imgUrl
+  async getImage(id: string): Promise<string> {
+    const image  = (await this.find(id)).imgUrl;
+    if(image) {
+      return image;
+    }
+    return "Invalid url"
   }
 }

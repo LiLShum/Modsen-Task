@@ -9,7 +9,7 @@ import CreateUserDto from "./dto/create-user.dto";
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async createUser(dto: CreateUserDto, googleId = ''){
+  async createUser(dto: CreateUserDto, googleId = '') : Promise<User> {
     const newUser = new this.userModel(dto);
     if(googleId) newUser.googleId = googleId;
     return newUser.save();

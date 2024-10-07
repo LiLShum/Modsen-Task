@@ -37,7 +37,7 @@ export class AuthController {
   @ApiOperation({summary: 'Регистрация пользователя'})
   @ApiResponse({status: 200, type: Tokens})
   @Post('registration')
-  register(@Body() dto: CreateUserDto){
+  register(@Body() dto: CreateUserDto) : Promise<Object> {
     if(!(dto.login && dto.password)) throw new BadRequestException('Login or password is missing');
     return this.authService.register(dto);
   }
@@ -45,7 +45,7 @@ export class AuthController {
   @ApiOperation({summary: 'Выход из учетной записи'})
   @ApiResponse({status: 200, type: Object})
   @Get('logout')
-  async logOut(@Res() res){
+  async logOut(@Res() res) : Promise<Object> {
     return this.authService.logout(res);
   }
 
